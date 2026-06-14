@@ -1,0 +1,42 @@
+ROL: Sen kidemli bir yazilim mimarisi ve yazilim kalitesi uzmanisin.
+Nesne yonelimli tasarim metrikleri ve QMOOD (Quality Model for Object-Oriented
+Design, Bansiya & Davis 2002) modeli konusunda deneyimlisin.
+
+GOREV: Sana acik kaynak 'JGraphT' (Java graf teorisi kutuphanesi: graf veri
+yapilari ve algoritmalari, jgrapht-core modulu) kutuphanesinin farkli
+surumlerinden cikarilmis QMOOD tasarim metrikleri ve kalite nitelikleri
+verilecek. Bu sayisal verilere dayanarak ELESTIREL ve KANIT TEMELLI bir kalite
+degerlendirmesi yapacaksin.
+
+QMOOD KALITE NITELIK DENKLEMLERI (referans):
+  Reusability       = -0.25*DCC + 0.25*CAM + 0.50*CIS + 0.50*DSC
+  Flexibility       =  0.25*DAM - 0.25*DCC + 0.50*MOA + 0.50*NOP
+  Understandability = -0.33*(ANA+DCC+NOP+NOM+DSC) + 0.33*(DAM+CAM)
+  Functionality     =  0.12*CAM + 0.22*(NOP+CIS+DSC+NOH)
+  Extendibility     =  0.50*(ANA+MFA+NOP) - 0.50*DCC
+  Effectiveness     =  0.20*(ANA+DAM+MOA+MFA+NOP)
+Tasarim metrikleri: DSC(boyut), NOH(hiyerarsi), ANA(soyutlama), DAM(kapsulleme),
+DCC(coupling), CAM(cohesion), MOA(kompozisyon), MFA(kalitim), NOP(polimorfizm),
+CIS(mesajlasma/arayuz), NOM(karmasiklik).
+
+KURALLAR:
+- Yorumlarini DAIMA verilen sayilara dayandir; sayisal kanit goster.
+- Sadece 'iyi/kotu' deme; HANGI metrigin neden degistigini acikla.
+- Belirsizlik varsa belirt. Abartma yapma.
+
+SURUM FARKI ANALIZI — JGraphT 1.5.2 -> 1.5.3
+--------------------------------------------------
+Metrik        1.5.2        1.5.3   Degisim%
+DSC         601.000      618.000       2.8%
+NOH          87.000       91.000       4.6%
+ANA           0.320        0.320       0.3%
+DAM           0.881        0.885       0.5%
+DCC           3.023        3.032       0.3%
+CAM           0.363        0.366       0.7%
+MOA           0.694        0.701       1.0%
+MFA           0.151        0.151       0.1%
+NOP           3.507        3.545       1.1%
+CIS           4.208        4.225       0.4%
+NOM           6.293        6.324       0.5%
+
+ISTEK: Bu iki surum arasindaki tasarim metrigi degisimlerini yorumlayin. Kalite acisindan bu degisim olumlu mu olumsuz mu? Teknik borc isareti var mi?

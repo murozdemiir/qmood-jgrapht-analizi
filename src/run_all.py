@@ -1,10 +1,11 @@
 """
 run_all.py
 ----------
-QMOOD analiz pipeline'ini sirayla calistirir:
+Pipeline'i sirayla calistirir:
   1) fetch_versions  -> surumleri indir
   2) analyze         -> metrik cikar + CSV uret
   3) visualize       -> grafikler uret
+  4) llm_prompts     -> LLM promptlarini uret
 """
 import runpy
 import os
@@ -13,7 +14,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
-STEPS = ["fetch_versions", "analyze", "visualize"]
+STEPS = ["fetch_versions", "analyze", "visualize", "llm_prompts"]
 
 
 def main():

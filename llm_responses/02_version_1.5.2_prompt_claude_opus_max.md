@@ -1,0 +1,135 @@
+# JGraphT (`jgrapht-core`) 1.5.2 — Tek Sürüm QMOOD Derin İncelemesi
+
+**Kapsam:** Tek sürüm anlık görüntü (1.5.2, 601 sınıf). QMOOD + CK metrikleri (ortalama **ve maksimum** değerlerle).
+**Model:** QMOOD (Bansiya & Davis, 2002).
+
+---
+
+## ⚠️ Yöntem Notu (önce okunmalı)
+
+Tek sürümlük veride **mutlak QMOOD değerleri tek başına "iyi/kötü" eşiğine oturtulamaz** — QMOOD karşılaştırmalı bir modeldir, referans (baseline) yoktur. Yorumlar iki sağlam dayanağa oturtulmuştur:
+
+1. **Denklem ayrıştırması:** Her niteliğin değerine *hangi metriğin ne kadar katkı verdiği* hesaplandı (her denklem girdilerden birebir yeniden üretildi; ör. Understandability = −0.33·(0.3195+3.0233+3.5075+6.2928+601)+0.33·(0.8806+0.3633) = **−202,26** ✓; Extendibility = 0.50·(0.3195+0.1511+3.5075)−0.50·3.0233 = **0,4774** ✓).
+2. **Ortalama–maksimum dağılımı:** Ortalamalar dengeli görünürken maksimumlar dağılımın kuyruğunu (god-class riskini) açığa çıkarır; asıl kanıt buradadır.
+
+---
+
+## 0. Bağlam: 1.5.2 yapısal olarak 1.5.1'in kopyasıdır (yama sürümü)
+
+1.5.2, tasarım metriklerini **anlamlı biçimde değiştirmemiştir**; bir yama/bakım sürümüdür. Aykırı (god) sınıf dokunulmamıştır:
+
+| Metrik (maks) | 1.5.1 | 1.5.2 | Δ |
+|---|---|---|---|
+| WMC_max | 381 | 381 | **0** |
+| LCOM_max | 4371 | 4371 | **0** |
+| NOM_max | 95 | 95 | **0** |
+| CBO_max | 21 | 21 | **0** |
+| NOC_max | 28 | 28 | **0** |
+| RFC_max | 151 | 149 | −2 |
+| MPC_max | 403 | 401 | −2 |
+| DSC (sınıf) | 600 | 601 | +1 |
+
+Tüm QMOOD nitelikleri de ihmal edilebilir düzeyde oynamıştır (ör. Extendibility 0,487→0,4774; Understandability −201,94→−202,26 — tek fark +1 sınıfın `−0.33·ΔDSC` katkısı). **Dolayısıyla aşağıdaki değerlendirme 1.5.1 ile özünde aynıdır; abartmamak adına yapay bir farklılaşma anlatısı kurulmamıştır.**
+
+---
+
+## 1. Genel Kalite Değerlendirmesi
+
+### 1.1 Asıl bulgu: Ortalamalar ılımlı, maksimumlar felaket (aşırı dağılım)
+
+Ortalama CK metrikleri kabul edilebilir görünür (WMC ~16, CBO ~3, LCOM ~30). Ancak maksimumlar, 601 küçük sınıfın seyrelttiği **en az bir "god class"** olduğunu gösteriyor:
+
+| CK metrik | Ortalama | **Maksimum** | Maks/Ort | Yorum |
+|---|---|---|---|---|
+| **LCOM** (kohezyon eksikliği) | 30,22 | **4371** | **~145×** | Tek sınıfta felaket düzeyde kohezyonsuzluk |
+| **WMC** (karmaşıklık) | 15,76 | **381** | ~24× | Tek sınıfta aşırı karmaşıklık |
+| **MPC** (dışa mesaj geçişi) | 16,78 | **401** | ~24× | Tek sınıfta aşırı dışa bağımlılık |
+| **NOM** (metot sayısı) | 6,29 | **95** | ~15× | 95 metotlu dev sınıf |
+| **RFC** (yanıt kümesi) | 17,13 | **149** | ~9× | Çok geniş yanıt kümesi → test güçlüğü |
+| **NOA** (öznitelik sayısı) | 3,06 | 24 | ~8× | Veri-yoğun sınıf |
+| **CBO** (coupling) | 3,02 | 21 | ~7× | Yüksek-coupling aykırı değeri |
+| **NOC** (alt sınıf sayısı) | 0,56 | 28 | ~50× | 28 alt sınıflı temel tip (uzantı noktası) |
+| **DIT** (kalıtım derinliği) | 0,32 | 3 | — | Sığ hiyerarşi (olumlu) |
+
+**Aykırı değerler büyük olasılıkla aynı sınıfa ait** — kombinatorik kanıt: 95 metotlu bir sınıf için olası en yüksek LCOM = C(95,2) = **4465**; gözlenen LCOM_max = **4371**. Yani 4465 metot çiftinin yalnızca ~47'si ortak alan paylaşıyor (**%98,9'u kohezyonsuz**). WMC_max=381 ≈ 95 metot × ~4 karmaşıklık, MPC_max=401 ≈ 95 metot × ~4,2 çağrı ile tutarlı. Bu profil tek bir **dev yardımcı/god sınıfa** (muhtemelen statik yardımcı metot yığını) işaret eder. *(Kesin değil; marjinal maksimumlar tek başına aynı sınıfı kanıtlamaz, ancak aritmetik uyum çok güçlü.)*
+
+### 1.2 Genuine güçlü yönler
+- **Güçlü kapsülleme:** DAM = 0,8806 → özniteliklerin ~%88'i private/protected. Flexibility ve Effectiveness'e olumlu katkı veren gerçek bir artı.
+- **Sığ, sade hiyerarşi:** DIT_max = 3, ortalama 0,32 → anlaşılabilirliği destekler; aşırı kalıtım yok.
+- **Kompozisyon ağırlıklı stil:** MOA = 0,6938 yüksek, MFA = 0,1511 düşük → "kalıtım yerine kompozisyon" tercihi; Flexibility'yi (1,565) yukarı çeker.
+
+### 1.3 Genuine zayıf yönler
+- **Kronik düşük kohezyon:** CAM = 0,3633 (düşük) + LCOM ortalaması 30 / maks 4371.
+- **Soyutlama kıtlığı:** ANA = 0,3195 ve MFA = 0,1511 çok düşük → genişletme iskelesi zayıf.
+- **Tek noktada yoğunlaşan coupling:** ortalama CBO ılımlı (3,02) ama MPC_max=401 / CBO_max=21.
+
+> **Not — yüksek Reusability ve Functionality kalite kanıtı DEĞİLDİR.** Reusability=301,94'ün ≈%99,5'i tek başına `0.50·DSC` (=300,5), Functionality=153,10'un ≈%98,9'u `0.22·(DSC+NOH)` (=151,36) terimidir. Bu iki değer pratikte "sistem 601 sınıf" demektir; sınıf-içi kaliteyi ölçmez. Bu yüzden bu rapor raw değerlerden "en güçlü nitelik" seçmez.
+
+---
+
+## 2. En Zayıf 2 Kalite Niteliği ve Sorumlu Metrikler
+
+**Sıralama yöntemi:** Nitelikler farklı ölçeklerde olduğundan kör büyüklük sıralaması yapılmadı. (a) İşaret olarak **negatif** olan tek nitelik en zayıf kabul edildi; (b) aynı ölçekteki (sınıf-başına, O(1)) üç nitelik — Flexibility 1,565 · Effectiveness 1,1105 · **Extendibility 0,4774** — adil biçimde karşılaştırıldı; en düşük olan ikinci en zayıf seçildi.
+
+### 🥇 En zayıf #1 — Understandability (= −202,26, tek negatif nitelik)
+
+| Terim | Değer | Katkı |
+|---|---|---|
+| −0.33·**DSC** | 601 | **−198,33** |
+| −0.33·NOM | 6,2928 | −2,08 |
+| −0.33·NOP | 3,5075 | −1,16 |
+| −0.33·DCC | 3,0233 | −1,00 |
+| −0.33·ANA | 0,3195 | −0,11 |
+| +0.33·DAM | 0,8806 | +0,29 |
+| +0.33·CAM | 0,3633 | +0,12 |
+| **Toplam** | | **−202,26** |
+
+**Sorumlu metrikler:** Ezici biçimde **DSC=601** (toplam etkinin **%98'i**). Bu büyük ölçüde bir **boyut artefaktıdır** — denklem boyuta göre normalize değil. Eyleme dönük gerçek sınıf-içi katkılar küçüktür: **NOM (−2,08)** ve **DCC (−1,00)**; ayrıca **CAM düşük olduğundan** (+0,12) pozitif tampon neredeyse yok. *Abartmamak adına:* ham Understandability "çöküşü" esasen "kod büyük" demektir; gerçek anlaşılabilirlik sorunu üniform değil, **Bölüm 1.1'deki god-class'ta yoğunlaşmıştır** (WMC_max=381, LCOM_max=4371, RFC_max=149).
+
+### 🥈 En zayıf #2 — Extendibility (= 0,4774; aynı ölçekteki en düşük nitelik)
+
+| Terim | Değer | Katkı |
+|---|---|---|
+| +0.50·**NOP** | 3,5075 | +1,754 |
+| +0.50·ANA | 0,3195 | +0,160 |
+| +0.50·MFA | 0,1511 | +0,076 |
+| −0.50·**DCC** | 3,0233 | **−1,512** |
+| **Toplam** | | **0,4774** |
+
+**Sorumlu metrikler:** İki yönlü zayıflık — (1) **DCC=3,0233 yüksek**, pozitif bütçenin (1,989) ~%76'sını (−1,512) yiyor; (2) **ANA=0,3195 ve MFA=0,1511 çok düşük**, ikisi birlikte yalnızca +0,236 katkı veriyor. Yani tasarım yalnızca **polimorfizm (NOP, +1,754)** sayesinde genişletilebiliyor; **soyutlama ve kalıtım-tabanlı yeniden kullanım iskelesi neredeyse yok** ve **coupling** kalanı tüketiyor.
+
+### Ortak suçlu: DCC (coupling)
+**DCC, iki en zayıf niteliğin İKİSİNİ birden** aşağı çekiyor (Understandability'de negatif kovada, Extendibility'de doğrudan −0,50 katsayıyla). Coupling düşürmek tek hamlede iki niteliği iyileştirir → aşağıdaki #2 önerisinin gerekçesi.
+
+---
+
+## 3. Üç Somut Refactoring Önerisi (metrik-hedefli)
+
+**1) Dev sınıfı (god class) ayrıştır — `NOM_max=95, WMC_max=381, LCOM_max=4371, MPC_max=401, RFC_max=149`.**
+Bu tek sınıf, beş metriğin felaket kuyruğundan aynı anda sorumlu ve **1.5.1'den beri hiç dokunulmamış** (bkz. Bölüm 0). LCOM'u olası maksimuma çok yakın (≈%99 kohezyonsuz) olduğundan, *Extract Class* ile sorumluluk bazında bölün; statik yardımcı yığınıysa konu başlıklarına göre ayrı yardımcı sınıflara dağıtın.
+→ *Beklenen etki:* LCOM_max, WMC_max, MPC_max, RFC_max büyük ölçüde düşer; **aykırı değer ortalamaları da şişirdiği için** LCOM_mean (30,22) ve WMC_mean (15,76) birlikte iyileşir; Understandability'nin gerçek sınıf-içi bileşeni rahatlar.
+
+**2) Coupling'i düşür — `DCC=3,0233` (iki zayıf niteliğin ortak suçlusu); `MPC_max=401, CBO_max=21`.**
+Yüksek-MPC sınıfı ile işbirlikçileri arasına **arayüz / Facade / Mediator** koyun; "feature envy" çağrı zincirlerini sadeleştirin. Hedef: aykırı sınıfın CBO'sunu 21'den ortalamaya (≈3) çekmek ve sistem DCC'sini azaltmak.
+→ *Beklenen etki:* DCC düşünce **hem Extendibility yükselir** (−0.50·DCC terimi küçülür) **hem de Understandability'nin per-class kısmı iyileşir**.
+
+**3) Hedefli soyutlama ekle — `ANA=0,3195`, `MFA=0,1511` (ikisi de çok düşük).**
+Extendibility soyutlamadan aç. Kompozisyon-ağırlıklı tasarımın tekrar eden/sabit-kodlanmış davranış bıraktığı yerlerde, **derin kalıtım dayatmadan** paylaşılan arayüz/abstract tipleri kilit uzantı noktalarında çıkarın. Kod tabanı bunu zaten yapabiliyor (NOC_max=28'lik bir temel tip mevcut uzantı noktası); bu deseni seçici biçimde çoğaltın.
+→ *Beklenen etki:* ANA ve MFA yükselir → Extendibility (ve Effectiveness) artar; DIT sığ kaldığından (maks 3) anlaşılabilirlik bozulmaz.
+
+> Üç önerinin tamamı doğrudan iki en zayıf niteliği hedefler: #1 ve #2 Understandability'nin gerçek (per-class) sorununu ve coupling'i, #2 ve #3 ise Extendibility'yi onarır.
+
+---
+
+## Belirsizlikler ve Sınırlamalar
+- **Tek anlık görüntü, referans yok.** Mutlak QMOOD değerleri eşiklenemez; yorumlar denklem ayrıştırması ve ortalama–maksimum dağılımına dayandırıldı.
+- **1.5.2, 1.5.1'in yapısal kopyasıdır.** Bu sürüme özgü yeni bir tasarım bulgusu yoktur; değerlendirme bilinçli olarak 1.5.1 ile aynıdır (yapay farklılaştırma yapılmadı).
+- **Marjinal maksimumlar aynı sınıfı kesin kanıtlamaz.** "Tek god class" çıkarımı güçlü aritmetik uyuma dayanır (LCOM_max ≈ C(NOM_max,2)), ancak kesinlik için sınıf düzeyinde liste gerekir.
+- **Boyut iç içeliği (confound):** Reusability/Functionality/Understandability ham değerleri DSC ile iç içedir; "iyi/kötü" kanıtı olarak okunmamalıdır.
+- **Ortalamalar dağılımı gizler;** öneriler kasıtlı olarak ortalamayı değil **kuyruğu (aykırı sınıfı)** hedefler.
+- LCOM tanımı uygulamaya göre değişebilir; burada klasik CK-LCOM (kohezyonsuz metot çiftleri) varsayıldı — kombinatorik üst sınır bu varsayıma dayanır.
+
+---
+
+### Tek Cümlelik Özet
+1.5.2 **yapısal olarak 1.5.1'in bir yama-kopyasıdır** (god sınıf birebir aynı: NOM 95 / WMC 381 / LCOM 4371 / MPC 401 / RFC 149); iyi kapsüllenmiş (DAM 0,88), sığ ve kompozisyon-ağırlıklı bu büyük tasarımın ortalama metrikleri kabul edilebilir olsa da baskın kalite ve bakım yükü bu tek aykırı sınıftır — QMOOD'da en zayıf iki nitelik **Understandability** (≈%98 DSC-boyut güdümlü; gerçek sorun god-class'ta yoğun) ve **Extendibility** (0,4774; yüksek **DCC** + çok düşük **ANA/MFA**) olup, çözüm dağınık değil **yoğunlaşmıştır**: aykırı sınıfı bölmek + coupling'i düşürmek + hedefli soyutlama eklemek birden çok metriği aynı anda iyileştirir.
