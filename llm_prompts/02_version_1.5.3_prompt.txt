@@ -1,0 +1,42 @@
+Aşağıdaki istediğim sonuç için md dosyası şeklinde download edebileceğim bir output oluşturur musun?
+ROL: Sen kidemli bir yazilim mimarisi ve yazilim kalitesi uzmanisin.
+Nesne yonelimli tasarim metrikleri ve QMOOD (Quality Model for Object-Oriented
+Design, Bansiya & Davis 2002) modeli konusunda deneyimlisin.
+
+GOREV: Sana acik kaynak 'JGraphT' (Java graf teorisi kutuphanesi: graf veri
+yapilari ve algoritmalari, jgrapht-core modulu) kutuphanesinin farkli
+surumlerinden cikarilmis QMOOD tasarim metrikleri ve kalite nitelikleri
+verilecek. Bu sayisal verilere dayanarak ELESTIREL ve KANIT TEMELLI bir kalite
+degerlendirmesi yapacaksin.
+
+QMOOD KALITE NITELIK DENKLEMLERI (referans):
+  Reusability       = -0.25*DCC + 0.25*CAM + 0.50*CIS + 0.50*DSC
+  Flexibility       =  0.25*DAM - 0.25*DCC + 0.50*MOA + 0.50*NOP
+  Understandability = -0.33*(ANA+DCC+NOP+NOM+DSC) + 0.33*(DAM+CAM)
+  Functionality     =  0.12*CAM + 0.22*(NOP+CIS+DSC+NOH)
+  Extendibility     =  0.50*(ANA+MFA+NOP) - 0.50*DCC
+  Effectiveness     =  0.20*(ANA+DAM+MOA+MFA+NOP)
+Tasarim metrikleri: DSC(boyut), NOH(hiyerarsi), ANA(soyutlama), DAM(kapsulleme),
+DCC(coupling), CAM(cohesion), MOA(kompozisyon), MFA(kalitim), NOP(polimorfizm),
+CIS(mesajlasma/arayuz), NOM(karmasiklik).
+
+KURALLAR:
+- Yorumlarini DAIMA verilen sayilara dayandir; sayisal kanit goster.
+- Sadece 'iyi/kotu' deme; HANGI metrigin neden degistigini acikla.
+- Belirsizlik varsa belirt. Abartma yapma.
+
+TEK SURUM DERIN INCELEME — JGraphT 1.5.3
+--------------------------------------------------
+QMOOD tasarim metrikleri:
+version   DSC  NOH    ANA   DAM    DCC   CAM    MOA    MFA    NOP    CIS    NOM
+  1.5.3 618.0 91.0 0.3204 0.885 3.0324 0.366 0.7006 0.1512 3.5453 4.2249 6.3236
+
+CK metrik ortalamalari:
+version  num_classes  DIT_mean  NOC_mean  WMC_mean  CBO_mean  RFC_mean  LCOM_mean  NOM_mean  NOA_mean  MPC_mean  DAC_mean  DIT_max  NOC_max  WMC_max  CBO_max  RFC_max  LCOM_max  NOM_max  NOA_max  MPC_max  DAC_max
+  1.5.3          618    0.3204     0.568   15.7848    3.0324   17.2508    31.2379    6.3236     3.021   16.8511    0.7006        3       28      381       21      149      4371       95       24      401       10
+
+Kalite nitelikleri (ham):
+version  Reusability  Flexibility  Understandability  Functionality  Extendibility  Effectiveness
+  1.5.3     310.4459       1.5861          -207.8903       157.7334         0.4923         1.1205
+
+ISTEK: Bu surumun kalitesini degerlendirin. En zayif 2 kalite niteligini ve sorumlu metrikleri belirleyin. 3 somut refactoring onerisi verin. sonucu md dosyası şeklinde download edebileceğim bir output oluşturur musun?
