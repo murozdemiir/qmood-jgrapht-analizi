@@ -1,0 +1,16 @@
+model,words,number_mentions,qmood_term_coverage,refactor_mentions,structured_sections
+chatgpt_5_3_instantly,337,47,15,1,20
+chatgpt_5_4_high,1183,181,21,9,28
+chatgpt_5_5_high,1998,287,20,12,34
+chatgpt_o3_medium,521,85,18,6,11
+claude_haiku_extended,2967,594,22,21,67
+claude_opus_max,1558,239,20,11,17
+claude_sonnet_max,1564,290,19,5,27
+deepseek_expert,968,89,21,4,13
+deepseek_instantly,840,119,21,3,17
+gemini-flashliste-standart,366,34,13,3,9
+gemini_flash_extended,761,86,19,4,9
+gemini_flash_standart,747,92,21,4,11
+gemini_flashlite_extended,546,54,13,3,10
+gemini_pro_extended,663,55,20,2,9
+gemini_pro_standart,666,70,17,5,11
